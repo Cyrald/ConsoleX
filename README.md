@@ -41,22 +41,9 @@
 - `alias remove <alias>` - Remove alias
 - `alias clear` - Remove all aliases
 
-## 📝 Usage Examples
 
-```
-# Nested command execution
-print "Current directory: $(pwd)"
 
-# Create and use aliases
-alias ll ls -l
-ll
-
-# Store and retrieve from cache
-cache put greeting "Hello, Console!"
-print $(cache get greeting)
-```
-
-## 🚀 Advanced Usage Examples
+## 🚀 Usage Examples
 
 ```
 # Working with environment variables
