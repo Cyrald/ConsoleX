@@ -1,4 +1,14 @@
-# 📋 Available Commands
+# 💻 ConsoleX
+
+## 🔑 Key Features
+
+- 🎨 **JavaFX GUI:** Stylish JavaFX interface with dark theme
+- 🔍 **Smart Auto-completion:** Press Tab to automatically complete commands, paths, and arguments
+- 📁 **File Operations:** Complete set of commands for working with files and directories
+- 🧩 **Flexible Command Creation System:** Create new commands by implementing classes
+- 📝 **Command Line Parsing:** Smart parser with support for quotes and escape characters
+
+## 📋 Available Commands
 
 ### 📁 File Operations
 - `cd <path>` - Change directory
