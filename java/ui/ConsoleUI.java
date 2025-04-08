@@ -12,6 +12,7 @@ import command.CommandParser;
 import command.CommandResult;
 import command.ParsedCommand;
 import command.impl.Alias;
+import commandUtils.FileManager;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.ContextMenu;
@@ -88,7 +89,8 @@ public class ConsoleUI extends BorderPane {
         setPadding(new Insets(10));
         
         // Welcome message initialization
-        appendToOutput("Welcome, "+System.getProperty("user.name")+"!\nType 'help' to view available commands.\n", Color.LIGHTGREEN);
+        appendToOutput("Welcome to ConsoleX, "+System.getProperty("user.name")+"!\nType 'help' to view available commands.\n", Color.LIGHTGREEN);
+        appendToOutput(FileManager.getCurrentDirectory().toString() + " >\n", Color.WHITE);
         
         // Command input handling
         inputField.setOnKeyPressed(event -> {
@@ -101,7 +103,7 @@ public class ConsoleUI extends BorderPane {
                     historyIndex = commandHistory.size();
                     
                     // Show command in output
-                    appendToOutput("> " + input + "\n", Color.WHITE);
+                    appendToOutput(FileManager.getCurrentDirectory().toString() + " > " + input + "\n", Color.WHITE);
                     
                     // Execute command(s)
                     try {
