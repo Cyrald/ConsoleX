@@ -194,6 +194,120 @@ public class FileManager {
     }
     
     /**
+     * Executes an application by name or path
+     * @param appName Name or path of the application to execute
+     * @param args Arguments to pass to the application
+     * @return true if the application was launched successfully, false otherwise
+     */
+    public static boolean executeApplication(String appName, List<String> args) {
+        try {
+            // If the appName is an absolute path or exists in the current directory
+            Path appPath = Paths.get(appName);
+            if (appPath.isAbsolute() && Files.exists(appPath)) {
+                return openFileOrApplication(appPath.toFile(), args);
+            }
+            
+            // If appName is a relative path in the current directory
+            Path currentDirApp = getCurrentDirectory().resolve(appName);
+            if (Files.exists(currentDirApp)) {
+                return openFileOrApplication(currentDirApp.toFile(), args);
+            }
+            
+            // Search in PATH environment variable
+            String pathEnv = System.getenv("PATH");
+            if (pathEnv != null) {
+                String[] pathDirs = pathEnv.split(File.pathSeparator);
+                
+                // For Windows, look for common executable extensions if no extension is specified
+                List<String> extensions = new ArrayList<>();
+                if (System.getProperty("os.name").toLowerCase().contains("win")) {
+                    // Check if app already has an extension
+                    if (!appName.contains(".")) {
+                        // Add common Windows executable extensions
+                        extensions.add(".exe");
+                        extensions.add(".cmd");
+                        extensions.add(".bat");
+                        extensions.add(".com");
+                    } else {
+                        // If it has an extension, just try it as is
+                        extensions.add("");
+                    }
+                } else {
+                    // On Unix-like systems, no extension is needed
+                    extensions.add("");
+                }
+                
+                for (String dir : pathDirs) {
+                    for (String ext : extensions) {
+                        Path execPath = Paths.get(dir, appName + ext);
+                        if (Files.exists(execPath)) {
+                            return openFileOrApplication(execPath.toFile(), args);
+                        }
+                    }
+                }
+            }
+            
+            // If not found, try direct command as last resort
+            File file = new File(appName);
+            return openFileOrApplication(file, args);
+            
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Opens a file or application using Desktop API with arguments if possible
+     * @param file The file or application to open
+     * @param args Arguments to pass to the application (if supported)
+     * @return true if opened successfully, false otherwise
+     */
+    private static boolean openFileOrApplication(File file, List<String> args) {
+        try {
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                
+                // If we have arguments, we need special handling
+                if (args != null && !args.isEmpty()) {
+                    // For Windows, try to handle arguments differently
+                    if (System.getProperty("os.name").toLowerCase().contains("win")) {
+                        // For Windows, use cmd.exe to run with arguments
+                        StringBuilder command = new StringBuilder();
+                        command.append("\"").append(file.getAbsolutePath()).append("\"");
+                        
+                        for (String arg : args) {
+                            command.append(" ").append(arg);
+                        }
+                        
+                        // Use cmd /c to execute
+                        String[] cmdArray = {"cmd.exe", "/c", "start", command.toString()};
+                        Runtime.getRuntime().exec(cmdArray);
+                        return true;
+                    } else {
+                        // For Unix-like systems, try direct execution
+                        String[] cmdArray = new String[args.size() + 1];
+                        cmdArray[0] = file.getAbsolutePath();
+                        for (int i = 0; i < args.size(); i++) {
+                            cmdArray[i + 1] = args.get(i);
+                        }
+                        Runtime.getRuntime().exec(cmdArray);
+                        return true;
+                    }
+                } else {
+                    // Simple case - no arguments, just open file with default app
+                    if (desktop.isSupported(Desktop.Action.OPEN)) {
+                        desktop.open(file);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+    
+    /**
      * Recursively delete a directory and all its contents.
      * 
      * @param directory The directory to delete

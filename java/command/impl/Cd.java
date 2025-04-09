@@ -30,7 +30,7 @@ public class Cd implements Command {
         pathStr = VariableManager.processVariables(pathStr);
         
         // Special case: cd ~ to go to user home
-        if (pathStr.equals("~") || pathStr.startsWith("~/")) {
+        if (pathStr.equals("~") || pathStr.startsWith("~/") || pathStr.startsWith("~\\")) {
             String userHome = System.getProperty("user.home");
             pathStr = pathStr.equals("~") ? userHome : userHome + pathStr.substring(1);
         }
@@ -44,11 +44,10 @@ public class Cd implements Command {
         }
         
         // Change directory
-        if (FileManager.setCurrentDirectory(newDir)) {
-            return CommandResult.success("Changed directory to: " + newDir);
-        } else {
+        if (!FileManager.setCurrentDirectory(newDir)) {
             return CommandResult.error("Failed to change directory.");
         }
+        return CommandResult.success(null);
     }
     
     @Override

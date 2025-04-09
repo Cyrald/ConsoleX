@@ -22,13 +22,13 @@ public class CacheCommand implements Command {
     
     @Override
     public String getDescription() {
-        return "Cache management. Available operations: put, get, remove, clear, list";
+        return "Cache management. Available operations: set, get, remove, clear, list";
     }
     
     @Override
     public String getUsage() {
         StringBuilder usage = new StringBuilder();
-        usage.append("cache put <key> <value> - Save a value to the cache\n");
+        usage.append("cache set <key> <value> - Save a value to the cache\n");
         usage.append("cache get <key> - Get a value from the cache\n");
         usage.append("cache remove <key> - Remove a value from the cache\n");
         usage.append("cache clear - Clear the cache\n");
@@ -45,7 +45,7 @@ public class CacheCommand implements Command {
         String operation = args.get(0).toLowerCase();
         
         switch (operation) {
-            case "put":
+            case "set":
                 return handlePut(args);
             case "get":
                 return handleGet(args);
@@ -57,13 +57,13 @@ public class CacheCommand implements Command {
                 return handleList();
             default:
                 return new CommandResult(true, "Unknown operation: " + operation + 
-                        "\nAvailable operations: put, get, remove, clear, list");
+                        "\nAvailable operations: set, get, remove, clear, list");
         }
     }
     
     private CommandResult handlePut(List<String> args) {
         if (args.size() < 3) {
-            return new CommandResult(true, "Not enough arguments. Usage: cache put <key> <value>");
+            return new CommandResult(true, "Not enough arguments. Usage: cache set <key> <value>");
         }
         
         String key = args.get(1);

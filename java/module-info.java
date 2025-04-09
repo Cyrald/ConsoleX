@@ -1,6 +1,7 @@
 module Console{
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.web;
     requires org.reflections;
     requires java.base;
     requires org.slf4j;
@@ -9,12 +10,12 @@ module Console{
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.annotation;
 	requires java.desktop;
-    
+	requires jdk.jsobject;
     
     opens Core to javafx.fxml;
     opens ui to javafx.fxml;
     exports Core;
     exports ui;
     exports command;
-    exports command.impl;
-}
+    exports command.impl; 
+} 

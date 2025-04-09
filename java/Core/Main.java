@@ -28,7 +28,7 @@ public class Main extends Application {
 			System.err.println("Failed to load application icon: " + e.getMessage());
 		}
 
-		primaryStage.setTitle("Console");
+		primaryStage.setTitle("ConsoleX");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
